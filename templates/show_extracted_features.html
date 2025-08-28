@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Feature Table</title>
+<style>
+  table {
+    border-collapse: collapse;
+    width: 90%;
+    margin: 20px auto;
+  }
+  th, td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 10px;
+  }
+  th {
+    background-color: #007BFF;
+    color: white;
+  }
+</style>
+</head>
+<body>
+
+<h2 style="text-align:center;">Feature Extraction Table</h2>
+
+<table>
+  <thead>
+    <tr>
+      <th>Domain</th>
+      <th>Feature</th>
+      <th>Feature Description</th>
+      <th>Select</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for feature in features %}
+    <tr>
+      <td>{{ domain }}</td>
+      <td>{{ feature.feature }}</td>
+      <td>{{ feature.feature_description }}</td>
+      <td><input type="checkbox" /></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+</body>
+</html>

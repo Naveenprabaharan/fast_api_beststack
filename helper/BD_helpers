@@ -1,0 +1,8 @@
+creating table
+create table notes (
+  id serial primary key,
+  software_categories text,
+  feature text,
+  content_description text,
+  created_at timestamp default now()
+);

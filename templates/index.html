@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Manage Page</title>
+<link rel="stylesheet" href="{{ url_for('static', path='/css/index.css') }}">
+
+</head>
+<body>
+
+<div class="button-container">
+  <button id="manageFeaturesBtn">Manage Features</button>
+  <button id="manageDomain">Manage Domain</button>
+  <button id="manageUsers">Manage Users</button>
+</div>
+
+<form id="featureForm" method="POST" action="http://127.0.0.1:8000/request_domain_features">
+  <label for="domainInput">Enter domain to extract features:</label>
+  <input type="text" id="domainInput" name="domain" placeholder="example.com" required />
+  <input type="submit" value="Submit" />
+</form>
+
+<script>
+  const manageFeaturesBtn = document.getElementById('manageFeaturesBtn');
+  const featureForm = document.getElementById('featureForm');
+
+  manageFeaturesBtn.addEventListener('click', () => {
+    window.location.href = 'http://127.0.0.1:8000/feature_accuring_domain'; 
+  });
+
+</script>
+
+</body>
+</html>

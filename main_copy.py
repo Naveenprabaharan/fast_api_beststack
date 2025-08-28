@@ -1,0 +1,116 @@
+from fastapi import FastAPI
+from databases import Database
+from supabase import create_client, Client
+from dotenv import load_dotenv
+import os , json
+from pydantic import BaseModel
+from models.models import DomainModel
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi import FastAPI, Request
+from fastapi.templating import Jinja2Templates
+from fastapi.responses import HTMLResponse
+import llm_helper.feature_extractor as FE
+
+# Load API key from .env file
+load_dotenv()
+SUPABASE_API_KEY = os.environ.get("EXPO_PUBLIC_SUPABASE_KEY")
+SUPABASE_API_URL = os.environ.get("EXPO_PUBLIC_SUPABASE_URL")
+POSTGRES_SQL_URL = os.environ.get("POSTGRES_SQL_URL")
+
+
+
+# Supabase credentials (replace with your project values)
+SUPABASE_URL = SUPABASE_API_URL
+SUPABASE_ANON_KEY = SUPABASE_API_KEY
+DATABASE_URL = POSTGRES_SQL_URL
+
+app = FastAPI()
+app.mount("/static", StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
+# Add CORS middleware
+origins = [
+    "http://127.0.0.1:8000",  # your frontend URL
+    "http://localhost:8000",
+    # add other origins if needed
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,      # allowed origins
+    allow_credentials=True,
+    allow_methods=["*"],        # allow all HTTP methods (GET, POST, etc.)
+    allow_headers=["*"],        # allow all headers
+)
+# Connect asynchronously to PostgreSQL (via Supabase)
+# database = Database(DATABASE_URL)
+
+# # Optional: Initialize Supabase client for API interactions
+# supabase: Client = create_client(SUPABASE_URL, SUPABASE_ANON_KEY)
+
+# @app.on_event("startup")
+# async def startup():
+#     await database.connect()
+
+# @app.on_event("shutdown")
+# async def shutdown():
+#     await database.disconnect()
+
+@app.get("/", response_class=HTMLResponse)
+async def read_root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request, "message": "Hello from FastAPI!"})
+
+# @app.get("/return_supabe")
+# async def read_root():
+#     # Example query to fetch rows from a "notes" table (make sure it exists)
+#     query = "SELECT * FROM notes"
+#     results = await database.fetch_all(query=query)
+#     return {"notes": results}
+
+# @app.get("/feature")
+# async def get_features_data():
+#     # Getitng features data table 
+#     query = "SELECT * FROM feature"
+#     results = await database.fetch_all(query=query)
+#     return {"notes":results}
+
+
+@app.post("/domain")
+async def receive_domain(domain_data: DomainModel):
+    domain_name = domain_data.domain
+    print(f"Received domain: {domain_name}")
+    # You can add logic here to save or process the domain name as needed
+    return {"domain": domain_name}
+
+@app.get("/request_domain_features", response_class=HTMLResponse)
+async def receive_domain_features(request: Request):
+    domain_name = request.query_params.get("domain")
+    print(f"Feature extraction requested for domain: {domain_name}")
+    # Add your feature extraction logic here
+    feature_result = FE.feature_extractor_function(domain_name)
+    cleaned_str = feature_result.replace("```json", "")
+    cleaned_str = cleaned_str.replace("```", "")
+    # print(f'fe:{cleaned_str}')
+    feature_data = json.loads(cleaned_str)
+    keys_list = list(feature_data.keys())  # convert dict_keys to list
+    first_key = keys_list[0]
+    return templates.TemplateResponse(
+        "show_extracted_features.html",
+        {
+            "request": request,
+            "domain": domain_name,
+            "features": feature_data[first_key]
+        }
+    )
+
+# @app.post("/request_domain_features", response_class=HTMLResponse)
+# async def receive_domain_features(request: Request, domain_data: DomainModel):
+#     domain_name = domain_data.domain
+#     print(f"Feature extraction requested for domain: {domain_name}")
+
+#     return templates.TemplateResponse("show_extracted_features.html", {"request": request, "message": "Hello from FastAPI!"})
+
+
+@app.get("/feature_accuring_domain", response_class=HTMLResponse)
+async def read_root(request: Request):
+    return templates.TemplateResponse("extract_feature.html", {"request": request, "message": "Hello from FastAPI!"})

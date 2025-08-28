@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Extract Feature Form</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/extract_feature.css') }}">
+</head>
+<body>
+    <h1>Hello folk!</h1>
+    <h2>{{message}}</h2>
+    <form id="featureForm" method="POST" >
+    <label for="domainInput">Enter domain to extract features:</label>
+    <input type="text" id="domainInput" name="domain" placeholder="example.com" required />
+    <input type="submit" value="Submit" />
+    </form>
+    <div id="resultContainer"></div>
+
+
+    <script>
+  const manageFeaturesBtn = document.getElementById('manageFeaturesBtn');
+  const featureForm = document.getElementById('featureForm');
+
+  featureForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const domain = document.getElementById('domainInput').value;
+    window.location.href = `/request_domain_features?domain=${encodeURIComponent(domain)}`;
+});
+</script>
+</body>
+
+</html>

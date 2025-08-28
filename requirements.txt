@@ -1,0 +1,14 @@
+fastapi 
+uvicorn 
+asyncpg 
+databases 
+# supabase-py
+supabase
+dotenv
+psycopg2-binary
+langchain_anthropic
+langchain
+langgraph
+IPython
+jinja2
+python-multipart
