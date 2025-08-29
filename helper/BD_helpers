@@ -11,3 +11,11 @@ ALTER TABLE public.feature ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow insert for anon users" ON public.feature
 FOR INSERT TO anon
 WITH CHECK (true);
+
+create table softwares (
+  id serial primary key,
+  created_at timestamp default now(),
+  domain text,
+  software_name text,
+  software_url text
+);

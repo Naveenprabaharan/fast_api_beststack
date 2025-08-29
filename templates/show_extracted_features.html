@@ -30,7 +30,7 @@
   <button id="selectAllBtn">Select All</button>
   <button id="editFieldsBtn">Edit Fields</button>
 </div>
-
+ <div id="resultContainer"></div>
 <table id="featureTable">
   <thead>
     <tr>
@@ -94,6 +94,18 @@ document.getElementById('submitSelectedBtn').onclick = async function() {
   });
   alert('Submitted!');
 };
+const resultDiv = document.getElementById('resultContainer');
+  if (result.status === "success") {
+    resultDiv.textContent = "Success!";
+    resultDiv.style.color = "green";
+    document.getElementById('domainInput').value = "";
+    document.getElementById('softwareInput').value = "";
+    document.getElementById('software_linkInput').value = "";
+  } else {
+    resultDiv.textContent = "Failed enter valid data!";
+    resultDiv.style.color = "red";
+  }
+
 </script>
 
 </body>

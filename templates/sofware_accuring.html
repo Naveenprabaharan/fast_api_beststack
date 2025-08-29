@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Domain Form</title>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/extract_feature.css') }}">
+</head>
+<body>
+    <h1>Hello folk!</h1>
+    <form id="featureForm" method="POST" >
+    <label for="domainInput">Enter Domain Details:</label>
+    <input type="text" id="domainInput" name="domain" placeholder="Hosting" required />
+    <input type="text" id="softwareInput" name="software" placeholder="MumuHosting" required />
+    <input type="text" id="software_linkInput" name="software_link" placeholder="https://www.mumuhost.in/" required />
+    <input type="submit" value="Submit" />
+    </form>
+    <div id="resultContainer"></div>
+
+
+    <script>
+  const manageFeaturesBtn = document.getElementById('manageFeaturesBtn');
+  const featureForm = document.getElementById('featureForm');
+
+  featureForm.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const domain = document.getElementById('domainInput').value;
+  const software = document.getElementById('softwareInput').value;
+  const software_link = document.getElementById('software_linkInput').value;
+
+  const response = await fetch(`/domain_update?domain=${encodeURIComponent(domain)}&software=${encodeURIComponent(software)}&software_link=${encodeURIComponent(software_link)}`);
+  const result = await response.json();
+
+  const resultDiv = document.getElementById('resultContainer');
+  if (result.status === "success") {
+    resultDiv.textContent = "Success!";
+    resultDiv.style.color = "green";
+    document.getElementById('domainInput').value = "";
+    document.getElementById('softwareInput').value = "";
+    document.getElementById('software_linkInput').value = "";
+  } else {
+    resultDiv.textContent = "Failed enter valid data!";
+    resultDiv.style.color = "red";
+  }
+});
+</script>
+</body>
+
+</html>

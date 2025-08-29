@@ -182,6 +182,7 @@ async def updating_feature_supabase(request: Request):
     data = await request.json()
     features = data.get('features', [])
     results = []
+    success = True
     try:
         db = PostgresDB(USER, PASSWORD, HOST, PORT, DBNAME)
         for feature in features:
@@ -190,13 +191,17 @@ async def updating_feature_supabase(request: Request):
             desc = feature.get('feature_description')
             query = "INSERT INTO feature (domain, feature, feature_description) VALUES (%s, %s, %s);"
             try:
-                res = db.execute_query(query, (domain, feat, desc))
+                res = db.execute_query(query, (domain.lower(), feat, desc))
                 results.append(res)
             except Exception as e:
                 print(f"Query failed: {e}")
                 db.connection.rollback()
+                success = False
         db.close()
-        return {"status": "success", "inserted": len(results)}
+        if success:
+            return {"status": "success", "inserted": len(results)}
+        else:
+            return {"status": "fail"}
     except Exception as e:
         print(f'Error:{e}')
         db.close()
@@ -214,20 +219,6 @@ async def receive_domain_features(request: Request):
             print(f"Query failed: {e}")
             db.connection.rollback()
         db.close()
-        print(len(res))
-        print(res[0])
-        # print(res[0][0])
-        # s_no = [i[0] for i in res]
-        # created_time = [i[1] for i in res]
-        # domain_name = [i[2] for i in res]
-        # feature = [i[3] for i in res]
-        # features_description = [i[4] for i in res]
-        # print(f's_no = {s_no} \
-        #         created_time = {created_time} \
-        #         domain_name = {domain_name} \
-        #         feature = {feature} \
-        #         features_description = {features_description} \
-        #         ')
         return templates.TemplateResponse(
             "view_all_features.html",
             {
@@ -238,3 +229,30 @@ async def receive_domain_features(request: Request):
     except Exception as e:
         print(f'Error:{e}')
         db.close()
+
+# Software Accuring pahse
+@app.get("/sofware_accuring", response_class=HTMLResponse)
+async def read_root(request: Request):
+    return templates.TemplateResponse("sofware_accuring.html", {"request": request, "message": "Hello from FastAPI!"})
+
+@app.get("/domain_update", response_class=JSONResponse)
+async def receive_domain_features(request: Request):
+
+        domain_name = request.query_params.get("domain")
+        software = request.query_params.get("software")
+        software_link = request.query_params.get("software_link")
+        db = PostgresDB(USER, PASSWORD, HOST, PORT, DBNAME)
+        
+        query = "INSERT INTO public.softwares (domain, software_name, software_url) VALUES (%s, %s, %s);"
+        try:
+            res = db.execute_query(query, (domain_name.lower(), software.lower(), software_link.lower()))
+            db.close()
+        except Exception as e:
+            print(f"Query failed: {e}")
+            db.connection.rollback()
+            db.close()
+            return {"status": "fail"}
+        return {"status": "success", }
+
+
+
