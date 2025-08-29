@@ -6,3 +6,8 @@ create table notes (
   content_description text,
   created_at timestamp default now()
 );
+
+ALTER TABLE public.feature ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow insert for anon users" ON public.feature
+FOR INSERT TO anon
+WITH CHECK (true);

@@ -23,9 +23,15 @@
 </head>
 <body>
 
+
 <h2 style="text-align:center;">Feature Extraction Table</h2>
 
-<table>
+<div style="text-align:center; margin-bottom: 10px;">
+  <button id="selectAllBtn">Select All</button>
+  <button id="editFieldsBtn">Edit Fields</button>
+</div>
+
+<table id="featureTable">
   <thead>
     <tr>
       <th>Domain</th>
@@ -38,13 +44,57 @@
     {% for feature in features %}
     <tr>
       <td>{{ domain }}</td>
-      <td>{{ feature.feature }}</td>
-      <td>{{ feature.feature_description }}</td>
-      <td><input type="checkbox" /></td>
+      <td class="editable">{{ feature.feature }}</td>
+      <td class="editable">{{ feature.feature_description }}</td>
+      <td><input type="checkbox" class="rowCheckbox" /></td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
+
+<div style="text-align:center; margin-top: 10px;">
+  <button id="submitSelectedBtn">Submit Selected</button>
+</div>
+
+<script>
+document.getElementById('selectAllBtn').onclick = function() {
+  document.querySelectorAll('.rowCheckbox').forEach(cb => cb.checked = true);
+};
+
+document.getElementById('editFieldsBtn').onclick = function() {
+  document.querySelectorAll('.editable').forEach(cell => {
+    if (!cell.hasAttribute('contenteditable')) {
+      cell.setAttribute('contenteditable', 'true');
+      cell.style.backgroundColor = '#f9f9a9';
+    } else {
+      cell.removeAttribute('contenteditable');
+      cell.style.backgroundColor = '';
+    }
+  });
+};
+
+document.getElementById('submitSelectedBtn').onclick = async function() {
+  const rows = document.querySelectorAll('#featureTable tbody tr');
+  const selectedData = [];
+  rows.forEach(row => {
+    const checkbox = row.querySelector('.rowCheckbox');
+    if (checkbox.checked) {
+      const domain = row.children[0].innerText;
+      const feature = row.children[1].innerText;
+      const feature_description = row.children[2].innerText;
+      selectedData.push({ domain, feature, feature_description });
+    }
+  });
+
+  // Send to backend
+  await fetch('/updating_feature_supabase', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ features: selectedData })
+  });
+  alert('Submitted!');
+};
+</script>
 
 </body>
 </html>

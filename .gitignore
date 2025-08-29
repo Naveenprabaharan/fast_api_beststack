@@ -1,3 +1,5 @@
 venv/
 .env
 llm_helper/.env
+*/__pycache__
+__pycache__
