@@ -11,6 +11,7 @@
 
 <div class="button-container">
   <button id="manageFeaturesBtn">Manage Features</button>
+  <button id="viewFeaturesBtn">View Features</button>
   <button id="manageDomain">Manage Domain</button>
   <button id="manageUsers">Manage Users</button>
 </div>
@@ -24,9 +25,13 @@
 <script>
   const manageFeaturesBtn = document.getElementById('manageFeaturesBtn');
   const featureForm = document.getElementById('featureForm');
+  const viewFeaturesBtn = document.getElementById('viewFeaturesBtn');
 
   manageFeaturesBtn.addEventListener('click', () => {
     window.location.href = 'http://127.0.0.1:8000/feature_accuring_domain'; 
+  });
+  viewFeaturesBtn.addEventListener('click', () => {
+    window.location.href = 'http://127.0.0.1:8000/view_all_features'; 
   });
 
 </script>

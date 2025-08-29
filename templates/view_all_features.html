@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Feature Table</title>
+<style>
+  table {
+    border-collapse: collapse;
+    width: 90%;
+    margin: 20px auto;
+  }
+  th, td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 10px;
+  }
+  th {
+    background-color: #007BFF;
+    color: white;
+  }
+</style>
+</head>
+<body>
+
+
+<h2 style="text-align:center;">Feature Extraction Table</h2>
+
+<div style="text-align:center; margin-bottom: 10px;">
+  <button id="selectAllBtn">Select All</button>
+  <button id="editFieldsBtn">Edit Fields</button>
+</div>
+
+<table id="featureTable">
+  <thead>
+    <tr>
+        <th>s_no</th>
+        <th>created_time</th>
+        <th>domain_name</th>
+        <th>feature</th>
+        <th>features_description</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for s_no,created_time, domain_name,feature,features_description   in features %}
+    <tr>
+      <td class="editable">{{ s_no }}</td>
+      <td class="editable">{{ created_time }}</td>
+      <td class="editable">{{ domain_name }}</td>
+      <td class="editable">{{ feature }}</td>
+      <td class="editable">{{ features_description }}</td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+
+
+
+
+</body>
+</html>

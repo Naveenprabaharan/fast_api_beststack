@@ -200,3 +200,41 @@ async def updating_feature_supabase(request: Request):
     except Exception as e:
         print(f'Error:{e}')
         db.close()
+        
+
+@app.get("/view_all_features", response_class=HTMLResponse)
+async def receive_domain_features(request: Request):
+    try:
+        db = PostgresDB(USER, PASSWORD, HOST, PORT, DBNAME)
+        
+        query = "SELECT * FROM public.feature;"
+        try:
+            res = db.execute_query(query)
+        except Exception as e:
+            print(f"Query failed: {e}")
+            db.connection.rollback()
+        db.close()
+        print(len(res))
+        print(res[0])
+        # print(res[0][0])
+        # s_no = [i[0] for i in res]
+        # created_time = [i[1] for i in res]
+        # domain_name = [i[2] for i in res]
+        # feature = [i[3] for i in res]
+        # features_description = [i[4] for i in res]
+        # print(f's_no = {s_no} \
+        #         created_time = {created_time} \
+        #         domain_name = {domain_name} \
+        #         feature = {feature} \
+        #         features_description = {features_description} \
+        #         ')
+        return templates.TemplateResponse(
+            "view_all_features.html",
+            {
+                "request": request,
+                "features" : res
+            }
+        )
+    except Exception as e:
+        print(f'Error:{e}')
+        db.close()
