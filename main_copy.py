@@ -384,7 +384,7 @@ def get_data_for_domain(request: Request):
             for key, val in json_data.items():
                 col_name = key.lower().replace(" ", "_").replace("/", "_").replace("&", "_")
                 # You can choose to store either 'details', 'summarizer', or both
-                crm_row[col_name] = val.get("details", "") if isinstance(val, dict) else val
+                crm_row[col_name] = json.dumps(val) if isinstance(val, dict) else val
             
             # Build dynamic insert/update statement using your DB helper
             db.upsert(table="crm", key_column="software", data=crm_row)
