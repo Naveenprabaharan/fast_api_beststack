@@ -198,6 +198,41 @@ async def updating_feature_supabase(request: Request):
                 print(f"Query failed: {e}")
                 db.connection.rollback()
                 success = False
+        
+        domain = features[0].get('domain').lower()
+        # Crating domain table         
+        query = "SELECT table_name \
+        FROM information_schema.tables \
+        WHERE table_schema = 'public' \
+        AND table_type = 'BASE TABLE';"
+        try:
+            res = db.execute_query(query)
+            print(res)
+            table_list = [item[0] for item in res]
+            if domain not in table_list:
+                print(f'need to add {domain} table') 
+                query = f"select feature from feature where domain = '{domain}';"
+                res = db.execute_query(query)
+                feature_names = [item[0] for item in res]
+                
+                print('feature name : ',res)
+                print('feature name : ',feature_names)
+                columns = ', '.join([f'"{feat.replace(" ", "_").lower()}" TEXT' for feat in feature_names])
+                print(f'columns:{columns}')
+                query = f'''
+                    CREATE TABLE "{domain}" (
+                        id SERIAL PRIMARY KEY,
+                        software TEXT,
+                        {columns},
+                        CONSTRAINT fk_software FOREIGN KEY (software) REFERENCES softwares(software_name)
+                    );
+                    '''
+
+                db.execute_query(query)
+        except Exception as e:
+            print(f"Query failed: {e}")
+            db.connection.rollback()
+            success = False
         db.close()
         if success:
             return {"status": "success", "inserted": len(results)}
