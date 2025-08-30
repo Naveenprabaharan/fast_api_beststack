@@ -3,3 +3,4 @@ venv/
 llm_helper/.env
 */__pycache__
 __pycache__/
+__pycache__/main_copy.cpython-312.pyc

@@ -387,10 +387,10 @@ def get_data_for_domain(request: Request):
                 crm_row[col_name] = json.dumps(val) if isinstance(val, dict) else val
             
             # Build dynamic insert/update statement using your DB helper
-            db.upsert(table="crm", key_column="software", data=crm_row)
+            db.upsert(table=domain, key_column="software", data=crm_row)
 
         db.close()
-        return {'status': 'success'}
+        return {'status': 'success','data':'Updated'}
     except Exception as e:
         print(f"Query failed: {e}")
         db.connection.rollback()

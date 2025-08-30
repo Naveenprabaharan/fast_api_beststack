@@ -1,0 +1,107 @@
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
+
+CREATE TABLE public.crm (
+  id integer NOT NULL DEFAULT nextval('crm_id_seq'::regclass),
+  created_at timestamp without time zone DEFAULT now(),
+  software text UNIQUE,
+  api_access text,
+  automation_capabilities text,
+  contact_management text,
+  customer_support text,
+  customization_options text,
+  data_import_export text,
+  ease_of_use text,
+  email_integration text,
+  free_trial_period text,
+  implementation_time text,
+  integration_capabilities text,
+  lead_scoring text,
+  learning_resources text,
+  mobile_accessibility text,
+  pricing_structure text,
+  reporting_and_analytics text,
+  sales_pipeline_management text,
+  scalability text,
+  security_features text,
+  social_media_integration text,
+  CONSTRAINT crm_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_software FOREIGN KEY (software) REFERENCES public.softwares(software_name)
+);
+CREATE TABLE public.database (
+  id integer NOT NULL DEFAULT nextval('database_id_seq'::regclass),
+  created_at timestamp without time zone DEFAULT now(),
+  software text UNIQUE,
+  backup___recovery text,
+  compliance_support text,
+  data_model_support text,
+  developer_experience text,
+  geographic_distribution text,
+  integration_capabilities text,
+  migration_tools text,
+  monitoring___analytics text,
+  performance text,
+  pricing_model text,
+  reliability___uptime text,
+  scalability text,
+  security_features text,
+  technical_support text,
+  vendor_lock-in_risk text,
+  CONSTRAINT database_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_software FOREIGN KEY (software) REFERENCES public.softwares(software_name)
+);
+CREATE TABLE public.domains (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  domain text NOT NULL UNIQUE,
+  CONSTRAINT domains_pkey PRIMARY KEY (id, domain)
+);
+CREATE TABLE public.feature (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  domain text,
+  feature text,
+  feature_description text,
+  CONSTRAINT feature_pkey PRIMARY KEY (id),
+  CONSTRAINT feature_domain_fkey FOREIGN KEY (domain) REFERENCES public.domains(domain)
+);
+CREATE TABLE public.hosting (
+  id integer NOT NULL DEFAULT nextval('hosting_id_seq'::regclass),
+  created_at timestamp without time zone DEFAULT now(),
+  software text UNIQUE,
+  auto-scaling_capabilities text,
+  backup___disaster_recovery text,
+  compliance___certifications text,
+  contract_flexibility text,
+  database_options text,
+  developer_tools text,
+  geographic_distribution text,
+  integration_capabilities text,
+  managed_services text,
+  migration_support text,
+  monitoring___analytics text,
+  performance text,
+  pricing_structure text,
+  reliability___uptime text,
+  resource_management text,
+  scalability text,
+  security_features text,
+  technical_support text,
+  CONSTRAINT hosting_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_software FOREIGN KEY (software) REFERENCES public.softwares(software_name)
+);
+CREATE TABLE public.notes (
+  id integer NOT NULL DEFAULT nextval('notes_id_seq'::regclass),
+  content text,
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT notes_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.softwares (
+  id integer NOT NULL DEFAULT nextval('softwares_id_seq'::regclass),
+  created_at timestamp without time zone DEFAULT now(),
+  domain text NOT NULL,
+  software_name text NOT NULL UNIQUE,
+  software_url text UNIQUE,
+  CONSTRAINT softwares_pkey PRIMARY KEY (id, software_name),
+  CONSTRAINT softwares_domain_fkey FOREIGN KEY (domain) REFERENCES public.domains(domain)
+);
