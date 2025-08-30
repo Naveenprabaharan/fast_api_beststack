@@ -14,3 +14,106 @@ enriched_result : [{'domain': 'crm', 'software_name': 'odoo', 'software_url': 'h
             print(f"Query failed: {e}")
             db.connection.rollback()
             success = False
+
+
+
+-- WARNING: This schema is for context only and is not meant to be run.
+-- Table order and constraints may not be valid for execution.
+
+CREATE TABLE public.database (
+  id integer NOT NULL DEFAULT nextval('database_id_seq'::regclass),
+  software text,
+  scalability text,
+  pricing_model text,
+  performance text,
+  reliability_&_uptime text,
+  security_features text,
+  data_model_support text,
+  backup_&_recovery text,
+  integration_capabilities text,
+  developer_experience text,
+  migration_tools text,
+  monitoring_&_analytics text,
+  geographic_distribution text,
+  vendor_lock-in_risk text,
+  compliance_support text,
+  technical_support text,
+  CONSTRAINT database_pkey PRIMARY KEY (id),
+  CONSTRAINT fk_software FOREIGN KEY (software) REFERENCES public.softwares(software_name)
+);
+CREATE TABLE public.domains (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  domain text NOT NULL UNIQUE,
+  CONSTRAINT domains_pkey PRIMARY KEY (id, domain)
+);
+CREATE TABLE public.feature (
+  id bigint GENERATED ALWAYS AS IDENTITY NOT NULL,
+  created_at timestamp with time zone NOT NULL DEFAULT now(),
+  domain text,
+  feature text,
+  feature_description text,
+  CONSTRAINT feature_pkey PRIMARY KEY (id),
+  CONSTRAINT feature_domain_fkey FOREIGN KEY (domain) REFERENCES public.domains(domain)
+);
+CREATE TABLE public.notes (
+  id integer NOT NULL DEFAULT nextval('notes_id_seq'::regclass),
+  content text,
+  created_at timestamp without time zone DEFAULT now(),
+  CONSTRAINT notes_pkey PRIMARY KEY (id)
+);
+CREATE TABLE public.softwares (
+  id integer NOT NULL DEFAULT nextval('softwares_id_seq'::regclass),
+  created_at timestamp without time zone DEFAULT now(),
+  domain text NOT NULL,
+  software_name text NOT NULL UNIQUE,
+  software_url text UNIQUE,
+  CONSTRAINT softwares_pkey PRIMARY KEY (id, software_name),
+  CONSTRAINT softwares_domain_fkey FOREIGN KEY (domain) REFERENCES public.domains(domain)
+);
+
+create table public.crm (
+  id serial not null,
+  created_at timestamp without time zone null default now(),
+  software text null,
+  api_access text null,
+  automation_capabilities text null,
+  contact_management text null,
+  customer_support text null,
+  customization_options text null,
+  data_import / export text null,
+  document_management text null,
+  ease_of_use text null,
+  email_integration text null,
+  free_trial_period text null,
+  implementation_support text null,
+  integration_capabilities text null,
+  mobile_accessibility text null,
+  pricing_structure text null,
+  reporting_and_analytics text null,
+  sales_pipeline_management text null,
+  scalability text null,
+  security_features text null,
+  social_media_integration text null,
+  task_management text null,
+  constraint crm_pkey primary key (id),
+  constraint fk_software foreign KEY (software) references softwares (software_name)
+) TABLESPACE pg_default;
+
+def add_column_if_missing(db, table, column):
+    query = f"""
+        DO $$
+        BEGIN
+            IF NOT EXISTS (
+                SELECT 1 FROM information_schema.columns
+                WHERE table_name='{table}' AND column_name='{column}'
+            ) THEN
+                EXECUTE 'ALTER TABLE {table} ADD COLUMN \"{column}\" TEXT;';
+            END IF;
+        END
+        $$;
+    """
+    db.execute_query(query)
+
+# Before upsert, for each col_name:
+add_column_if_missing(db, "crm", col_name)

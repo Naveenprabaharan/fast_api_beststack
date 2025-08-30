@@ -12,3 +12,4 @@ langgraph
 IPython
 jinja2
 python-multipart
+bs4

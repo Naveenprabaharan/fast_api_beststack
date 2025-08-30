@@ -1,0 +1,164 @@
+{
+  "Scalability": {
+    "summarizer": "Scalable CRM for growing businesses",
+    "details": "ZNI CRM is designed for small businesses and startups with the ability to help them grow into large enterprises, suggesting scalability as businesses expand."
+  },
+  "Pricing Structure": {
+    "summarizer": "Free CRM with paid upgrade options",
+    "details": "Offers a completely free CRM solution for small businesses with unlimited users. There are also paid CRM plans and paid Employee Tracking (FSM) plans available, though specific pricing tiers aren't detailed in the provided content."
+  },
+  "Ease of Implementation": {
+    "summarizer": "User-friendly for non-technical users",
+    "details": "Marketed as easy-to-use with no technical skills required, suggesting straightforward implementation for small businesses."
+  },
+  "User Interface": {
+    "summarizer": "User-friendly interface",
+    "details": "Features a simple, intuitive design that requires no technical skills, making it accessible for all users regardless of technical expertise."
+  },
+  "Mobile Accessibility": {
+    "summarizer": "Mobile business management apps with field tracking",
+    "details": "Provides mobile apps that allow users to manage their business on the go, including field force management with real-time tracking capabilities."
+  },
+  "Integration Capabilities": {
+    "summarizer": "Integration with business tools",
+    "details": "Seamlessly connects with email, WhatsApp, Facebook Ads, Google Ads, IndiaMart, JustDial, and other popular business tools."
+  },
+  "Customization Options": {
+    "summarizer": "Versatile business solution",
+    "details": "Limited information provided, though the all-in-one solution suggests adaptability to different business needs."
+  },
+  "Contact Management": {
+    "summarizer": "Contact management CRM",
+    "details": "Offers lead and contact management capabilities as part of its core CRM functionality."
+  },
+  "Pipeline Management": {
+    "summarizer": "Sales management tools",
+    "details": "Includes sales management features, though specific pipeline management details aren't explicitly mentioned in the provided content."
+  },
+  "Automation Features": {
+    "summarizer": "Sales automation",
+    "details": "Mentions automating sales processes as part of the CRM functionality."
+  },
+  "Reporting and Analytics": {
+    "summarizer": "No reporting/analytics info",
+    "details": "No specific information provided about reporting and analytics capabilities."
+  },
+  "Email Integration": {
+    "summarizer": "Email integration",
+    "details": "Mentioned as one of the integration capabilities, allowing seamless connection with email services."
+  },
+  "Customer Support": {
+    "summarizer": "24/7 customer support",
+    "details": "Offers 24/7 dedicated customer support to resolve queries anytime, highlighted as one of the key benefits."
+  },
+  "Data Security": {
+    "summarizer": "No data security details",
+    "details": "No specific information provided about data security measures."
+  },
+  "Free Trial Period": {
+    "summarizer": "Free trial offer without specified duration",
+    "details": "Mentions 'Start Your Free Trial' but doesn't specify the duration of the trial period."
+  },
+  "Training Resources": {
+    "summarizer": "Minimal training needs implied",
+    "details": "No specific information provided about training resources, though the emphasis on ease of use suggests minimal training requirements."
+  },
+  "Social Media Integration": {
+    "summarizer": "Facebook Ads Integration",
+    "details": "Integrates with Facebook Ads, suggesting some level of social media connectivity."
+  },
+  "Task Management": {
+    "summarizer": "No task management details",
+    "details": "No specific information provided about task management features."
+  },
+  "Document Management": {
+    "summarizer": "Document management with quotes and invoicing",
+    "details": "Includes quotes and invoicing capabilities, suggesting some level of document management."
+  },
+  "API Access": {
+    "summarizer": "No API access information",
+    "details": "No specific information provided about API access."
+  }
+}
+{
+  "Scalability": {
+    "summarizer": "Scalable business solution for SMBs and enterprises",
+    "details": "Odoo appears to be scalable for businesses of various sizes, with specific implementation services for both small to medium businesses (1-250 employees) and larger enterprises (250+ employees)."
+  },
+  "Pricing Structure": {
+    "summarizer": "Monthly subscription with free trial option",
+    "details": "Pricing is mentioned as 580.00 Rs per month for ALL apps, suggesting a comprehensive subscription model. They offer a 'Start now - It's free' option, indicating a freemium model."
+  },
+  "Ease of Implementation": {
+    "summarizer": "Implementation Support",
+    "details": "The website mentions 'Implementation Services' and offers 'Project Assessment' for larger businesses, suggesting they provide support during implementation. They also mention 'one-click install' for apps, indicating ease of setup."
+  },
+  "User Interface": {
+    "summarizer": "Business management platform",
+    "details": "The website suggests a simple and efficient platform with the tagline 'All your business on one platform. Simple, efficient, yet affordable!' The emphasis on simplicity suggests a user-friendly interface."
+  },
+  "Mobile Accessibility": {
+    "summarizer": "Mobile WhatsApp integration",
+    "details": "While not explicitly detailed in the content provided, the presence of WhatsApp integration suggests some level of mobile functionality."
+  },
+  "Integration Capabilities": {
+    "summarizer": "Fully integrated business application suite",
+    "details": "Odoo emphasizes 'perfect integration' between its apps, suggesting a seamless experience across different modules. The platform appears to be designed as an integrated suite of business applications."
+  },
+  "Customization Options": {
+    "summarizer": "Customization tools and development services",
+    "details": "Odoo Studio is mentioned as one of the apps, which likely provides customization capabilities. The reference to 'Development Services' also suggests customization possibilities."
+  },
+  "Contact Management": {
+    "summarizer": "Contact Management",
+    "details": "CRM is listed as one of the main applications, which typically includes contact management functionality."
+  },
+  "Pipeline Management": {
+    "summarizer": "Sales and CRM software",
+    "details": "Sales and CRM applications are mentioned, which typically include pipeline management features."
+  },
+  "Automation Features": {
+    "summarizer": "Marketing Automation Platform",
+    "details": "Marketing Automation is specifically mentioned as an app, and the platform appears to offer various automation capabilities across different business functions."
+  },
+  "Reporting and Analytics": {
+    "summarizer": "Spreadsheet/BI reporting tool",
+    "details": "Spreadsheet (BI) is listed among the apps, suggesting business intelligence and reporting capabilities."
+  },
+  "Email Integration": {
+    "summarizer": "Email Marketing Integration",
+    "details": "Email Marketing is listed as an application, indicating email integration capabilities."
+  },
+  "Customer Support": {
+    "summarizer": "Customer Support Solutions",
+    "details": "The website mentions Support services and Helpdesk application, suggesting robust customer support options both for Odoo users and for businesses to support their own customers."
+  },
+  "Data Security": {
+    "summarizer": "Data security details absent",
+    "details": "No specific information about data security is provided in the content."
+  },
+  "Free Trial Period": {
+    "summarizer": "Free trial/freemium model",
+    "details": "The 'Start now - It's free' and 'Try it free' options suggest a free trial or freemium model, but specific trial period details aren't mentioned."
+  },
+  "Training Resources": {
+    "summarizer": "Learning Resources",
+    "details": "The website mentions Learning resources including Tutorials, Documentation, Certifications, and Training, indicating comprehensive educational materials."
+  },
+  "Social Media Integration": {
+    "summarizer": "Social media integration",
+    "details": "Social Marketing is listed as an application, suggesting social media integration capabilities."
+  },
+  "Task Management": {
+    "summarizer": "Task Management Software",
+    "details": "Project, Timesheets, and Planning applications are mentioned, which typically include task management functionality."
+  },
+  "Document Management": {
+    "summarizer": "Document Management",
+    "details": "Documents and Sign applications are listed, indicating document management capabilities."
+  },
+  "API Access": {
+    "summarizer": "API access possibly available",
+    "details": "While not explicitly mentioned in the content provided, the reference to 'Development Services' and GitHub collaboration suggests API access may be available."
+  }
+}

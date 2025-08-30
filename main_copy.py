@@ -81,6 +81,19 @@ class PostgresDB:
         if self.connection:
             self.connection.close()
             print("Connection closed.")
+    
+    def upsert(self, table, key_column, data):
+        columns = ', '.join([f'"{col}"' for col in data.keys()])
+        values = [data[col] for col in data.keys()]
+        placeholders = ', '.join(['%s'] * len(values))
+        update_stmt = ', '.join([f'"{col}" = EXCLUDED."{col}"' for col in data.keys() if col != key_column])
+        query = f'''
+            INSERT INTO "{table}" ({columns})
+            VALUES ({placeholders})
+            ON CONFLICT ("{key_column}") DO UPDATE SET
+            {update_stmt};
+        '''
+        self.execute_query(query, values)
 
 # Usage example
 # db = PostgresDB(USER, PASSWORD, HOST, PORT, DBNAME)
@@ -217,15 +230,27 @@ async def updating_feature_supabase(request: Request):
                 
                 print('feature name : ',res)
                 print('feature name : ',feature_names)
-                columns = ', '.join([f'"{feat.replace(" ", "_").lower()}" TEXT' for feat in feature_names])
+                columns = ', '.join([f'"{feat.replace(" ", "_").replace("/", "_").replace("&", "_").lower()}" TEXT' for feat in feature_names])
                 print(f'columns:{columns}')
+                # query = f'''
+                #     CREATE TABLE "{domain}" (
+                #         id SERIAL PRIMARY KEY,
+                #         created_at timestamp without time zone DEFAULT now(),
+                #         software TEXT,
+                #         {columns},
+                #         CONSTRAINT fk_software FOREIGN KEY (software) REFERENCES softwares(software_name)
+                #     );
+                #     '''
                 query = f'''
                     CREATE TABLE "{domain}" (
                         id SERIAL PRIMARY KEY,
+                        created_at timestamp without time zone DEFAULT now(),
                         software TEXT,
                         {columns},
                         CONSTRAINT fk_software FOREIGN KEY (software) REFERENCES softwares(software_name)
                     );
+
+                    ALTER TABLE "{domain}" ADD CONSTRAINT crm_software_unique UNIQUE (software);
                     '''
 
                 db.execute_query(query)
@@ -326,30 +351,80 @@ def show_domain_software(request:Request):
     
 # get_data_for_domain
 @app.get("/get_data_for_domain", response_class=JSONResponse)
-def get_data_for_domain(request:Request):
+def get_data_for_domain(request: Request):
     domain = request.query_params.get("domain")
-    print(f'domain : {domain}')
+    print(f'domain: {domain}')
     db = PostgresDB(USER, PASSWORD, HOST, PORT, DBNAME)
-    query = f"SELECT  \
-            s.domain,  \
-            s.software_name,  \
-            s.software_url,  \
-            array_agg(f.feature) AS features,  \
-            array_agg(f.feature_description) AS feature_desc \
-            FROM  \
-            softwares s \
-            LEFT JOIN \
-            feature f ON s.domain = f.domain \
-            WHERE  \
-            s.domain = '{domain}' \
-            GROUP BY  \
-            s.domain, s.software_name, s.software_url;" 
-    # try:
-    res = db.execute_query(query)
-    db.close()
-    DE.get_data_for_domain(res)
-    # except Exception as e:
-    #     print(f"Query failed: {e}")
-    #     db.connection.rollback()
-    #     db.close()
-    # return {'status':'sucess'}
+    query = f"""
+        SELECT 
+            s.domain,
+            s.software_name,
+            s.software_url,
+            array_agg(f.feature) AS features,
+            array_agg(f.feature_description) AS feature_desc
+        FROM softwares s
+        LEFT JOIN feature f ON s.domain = f.domain
+        WHERE s.domain = %s
+        GROUP BY s.domain, s.software_name, s.software_url;
+    """
+    try:
+        res = db.execute_query(query, (domain,))
+        
+        for domain_val, software_name, software_url, features, features_desc in res:
+            # Call your LLM agent to get JSON summary dict per software
+            json_data = DE.llm_agent(domain_val, software_name, software_url, features, features_desc)
+            try:
+                json_data = json.loads(json_data)
+            except json.JSONDecodeError as e:
+                print(f"Failed to parse JSON from LLM agent for software {software_name}: {e}")
+            # Prepare column-value dict for insert based on your table schema
+            crm_row = {"software": software_name}
+            
+            # Normalize keys if needed, assuming json_data keys match DB columns or map accordingly
+            for key, val in json_data.items():
+                col_name = key.lower().replace(" ", "_").replace("/", "_").replace("&", "_")
+                # You can choose to store either 'details', 'summarizer', or both
+                crm_row[col_name] = val.get("details", "") if isinstance(val, dict) else val
+            
+            # Build dynamic insert/update statement using your DB helper
+            db.upsert(table="crm", key_column="software", data=crm_row)
+
+        db.close()
+        return {'status': 'success'}
+    except Exception as e:
+        print(f"Query failed: {e}")
+        db.connection.rollback()
+        db.close()
+        return {'status': 'error', 'detail': str(e)}
+
+# @app.get("/get_data_for_domain", response_class=JSONResponse)
+# def get_data_for_domain(request:Request):
+#     domain = request.query_params.get("domain")
+#     print(f'domain : {domain}')
+#     db = PostgresDB(USER, PASSWORD, HOST, PORT, DBNAME)
+#     query = f"SELECT  \
+#             s.domain,  \
+#             s.software_name,  \
+#             s.software_url,  \
+#             array_agg(f.feature) AS features,  \
+#             array_agg(f.feature_description) AS feature_desc \
+#             FROM  \
+#             softwares s \
+#             LEFT JOIN \
+#             feature f ON s.domain = f.domain \
+#             WHERE  \
+#             s.domain = '{domain}' \
+#             GROUP BY  \
+#             s.domain, s.software_name, s.software_url;" 
+#     # try:
+#     res = db.execute_query(query)
+#     db.close()
+#     print(res)
+#     for domain, software_name, software_url, features, features_desc in res:
+#         json_data = DE.llm_agent(domain, software_name, software_url, features, features_desc)
+#         print(json_data, end='\n\n\n\n')
+#     # except Exception as e:
+#     #     print(f"Query failed: {e}")
+#     #     db.connection.rollback()
+#     #     db.close()
+#     return {'status':'sucess'}
