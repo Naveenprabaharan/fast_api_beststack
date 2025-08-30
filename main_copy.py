@@ -316,8 +316,8 @@ async def receive_domain_features(request: Request):
         return {"status": "success", }
 
 
-@app.get("/show_domain_software", response_class=JSONResponse)
-def show_domain_software(request:Request):
+@app.get("/show_domain_software", response_class=HTMLResponse)
+def show_domain_software(request: Request):
     db = PostgresDB(USER, PASSWORD, HOST, PORT, DBNAME)
         
     query = "SELECT \
@@ -396,6 +396,106 @@ def get_data_for_domain(request: Request):
         db.connection.rollback()
         db.close()
         return {'status': 'error', 'detail': str(e)}
+
+
+
+@app.get("/view_data_for_domain", response_class=HTMLResponse)
+def view_data_for_domain(request: Request):
+    domain = request.query_params.get("domain")
+    print(f'domain: {domain}')
+    db = PostgresDB(USER, PASSWORD, HOST, PORT, DBNAME)
+    query = f'SELECT * FROM {domain};'
+    try:
+        res = db.execute_query(query)
+        db.close()
+        # print(res)
+        # Get column names
+        col_query = f"""
+            SELECT column_name FROM information_schema.columns
+            WHERE table_name = '{domain}' AND column_name != 'id' AND column_name != 'created_at' AND column_name != 'software';
+        """
+        db = PostgresDB(USER, PASSWORD, HOST, PORT, DBNAME)
+        col_res = db.execute_query(col_query)
+        db.close()
+        feature_cols = [item[0] for item in col_res]
+        # Process rows
+        data = []
+        for row in res:
+            software = row[2]  # assuming software is at index 2
+            features = []
+            for idx, col in enumerate(feature_cols):
+                json_str = row[3 + idx]  # adjust index as needed
+                if json_str:
+                    try:
+                        feature_data = json.loads(json_str)
+                        features.append({
+                            "feature": col,
+                            "summarizer": feature_data.get("summarizer", ""),
+                            "details": feature_data.get("details", "")
+                        })
+                    except Exception:
+                        features.append({
+                            "feature": col,
+                            "summarizer": "",
+                            "details": json_str
+                        })
+            data.append({
+                "software": software,
+                "features": features
+            })
+        print('\n\n\n\n\n',data)
+        # return {"status": "success", "data": data}
+        return templates.TemplateResponse(
+            "view_data_for_domain.html",
+            {
+                "request": request,
+                "features": data
+            }
+        )
+    except Exception as e:
+        print(f"Query failed: {e}")
+        db.connection.rollback()
+        db.close()
+        return templates.TemplateResponse(
+            "na_data.html",{"request": request}
+        )
+
+
+
+
+
+
+# # get_data_for_domain
+# @app.get("/view_data_for_domain", response_class=JSONResponse)
+# def view_data_for_domain(request: Request):
+#     domain = request.query_params.get("domain")
+#     print(f'domain: {domain}')
+#     db = PostgresDB(USER, PASSWORD, HOST, PORT, DBNAME)
+        
+#     query = f'SELECT * FROM {domain};'
+#     try:
+#         res = db.execute_query(query)
+#         db.close()
+#         print(res)
+#     except Exception as e:
+#         print(f"Query failed: {e}")
+#         db.connection.rollback()
+#         db.close()
+#     print(res)
+#     return {'status':'sucess'}
+    # return templates.TemplateResponse(
+    #     "view_data_for_domain.html",
+    #     {
+    #         "request": request,
+    #         "features": res
+    #     }
+    # )
+
+
+
+
+
+
 
 # @app.get("/get_data_for_domain", response_class=JSONResponse)
 # def get_data_for_domain(request:Request):
