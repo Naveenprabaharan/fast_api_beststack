@@ -250,7 +250,7 @@ async def updating_feature_supabase(request: Request):
                         CONSTRAINT fk_software FOREIGN KEY (software) REFERENCES softwares(software_name)
                     );
 
-                    ALTER TABLE "{domain}" ADD CONSTRAINT crm_software_unique UNIQUE (software);
+                    ALTER TABLE "{domain}" ADD CONSTRAINT {domain}_software_unique UNIQUE (software);
                     '''
 
                 db.execute_query(query)
