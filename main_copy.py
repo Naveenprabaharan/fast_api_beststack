@@ -11,6 +11,7 @@ from fastapi import FastAPI, Request
 from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse
 import llm_helper.feature_extractor as FE
+import llm_helper.dataExtractorLlm_agent as DE
 from fastapi.responses import JSONResponse
 
 # Load API key from .env file
@@ -255,4 +256,65 @@ async def receive_domain_features(request: Request):
         return {"status": "success", }
 
 
-
+@app.get("/show_domain_software", response_class=JSONResponse)
+def show_domain_software(request:Request):
+    db = PostgresDB(USER, PASSWORD, HOST, PORT, DBNAME)
+        
+    query = "SELECT \
+            d.domain, \
+            array_agg(f.feature) AS features, \
+            array_agg(DISTINCT s.software_name) FILTER (WHERE s.software_name IS NOT NULL) AS softwares \
+            FROM \
+            domains d \
+            LEFT JOIN \
+            feature f ON d.domain = f.domain \
+            LEFT JOIN \
+            softwares s ON d.domain = s.domain \
+            GROUP BY \
+            d.domain \
+            LIMIT 10;" 
+    try:
+        res = db.execute_query(query)
+        db.close()
+    except Exception as e:
+        print(f"Query failed: {e}")
+        db.connection.rollback()
+        db.close()
+    print(res)
+    return templates.TemplateResponse(
+        "show_domain_software.html",
+        {
+            "request": request,
+            "features": res
+        }
+    )
+    
+# get_data_for_domain
+@app.get("/get_data_for_domain", response_class=JSONResponse)
+def get_data_for_domain(request:Request):
+    domain = request.query_params.get("domain")
+    print(f'domain : {domain}')
+    db = PostgresDB(USER, PASSWORD, HOST, PORT, DBNAME)
+    query = f"SELECT  \
+            s.domain,  \
+            s.software_name,  \
+            s.software_url,  \
+            array_agg(f.feature) AS features,  \
+            array_agg(f.feature_description) AS feature_desc \
+            FROM  \
+            softwares s \
+            LEFT JOIN \
+            feature f ON s.domain = f.domain \
+            WHERE  \
+            s.domain = '{domain}' \
+            GROUP BY  \
+            s.domain, s.software_name, s.software_url;" 
+    # try:
+    res = db.execute_query(query)
+    db.close()
+    DE.get_data_for_domain(res)
+    # except Exception as e:
+    #     print(f"Query failed: {e}")
+    #     db.connection.rollback()
+    #     db.close()
+    # return {'status':'sucess'}

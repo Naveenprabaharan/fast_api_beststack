@@ -13,7 +13,7 @@
   <button id="manageFeaturesBtn">Manage Features</button>
   <button id="viewFeaturesBtn">View Features</button>
   <button id="managesoftware">Manage Software</button>
-  <button id="manageUsers">Manage Users</button>
+  <button id="updateData">Update Data</button>
 </div>
 
 <form id="featureForm" method="POST" action="http://127.0.0.1:8000/request_domain_features">
@@ -27,6 +27,7 @@
   const featureForm = document.getElementById('featureForm');
   const viewFeaturesBtn = document.getElementById('viewFeaturesBtn');
   const managesoftwareBtn = document.getElementById('managesoftware');
+  const updatedataBtn = document.getElementById('updateData');
 
   manageFeaturesBtn.addEventListener('click', () => {
     window.location.href = 'http://127.0.0.1:8000/feature_accuring_domain'; 
@@ -37,6 +38,11 @@
   managesoftwareBtn.addEventListener('click', () => {
     window.location.href = 'http://127.0.0.1:8000/sofware_accuring'; 
   });
+
+  updatedataBtn.addEventListener('click', () => {
+    window.location.href = 'http://127.0.0.1:8000/show_domain_software'; 
+  });
+  
 
 </script>
 

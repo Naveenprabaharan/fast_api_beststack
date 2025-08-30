@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Feature Table</title>
+<style>
+  table {
+    border-collapse: collapse;
+    width: 90%;
+    margin: 20px auto;
+  }
+  th, td {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 10px;
+  }
+  th {
+    background-color: #007BFF;
+    color: white;
+  }
+</style>
+</head>
+<body>
+
+
+<h2 style="text-align:center;">Feature Extraction Table</h2>
+
+<div style="text-align:center; margin-bottom: 10px;">
+  <button id="selectAllBtn">Select All</button>
+  <button id="editFieldsBtn">Edit Fields</button>
+</div>
+ <div id="resultContainer"></div>
+<table id="featureTable">
+  <thead>
+    <tr>
+      <th>Domain</th>
+      <th>Features</th>
+      <th>Softwares</th>
+      <th>Get Data</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for domain, feature, softwares in features %}
+    <tr>
+      <td>{{ domain }}</td>
+      <td class="editable">{{ feature }}</td>
+      <td class="editable">{{ softwares }}</td>
+  <td><button class="getDataBtn">Get Data</button></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<div style="text-align:center; margin-top: 10px;">
+  <button id="submitSelectedBtn">Submit Selected</button>
+</div>
+
+<script>
+document.querySelectorAll('.getDataBtn').forEach(btn => {
+  btn.addEventListener('click', async function() {
+    const row = btn.closest('tr');
+    const domain = row.children[0].innerText;
+    // Send domain to backend (adjust endpoint as needed)
+    const response = await fetch(`/get_data_for_domain?domain=${encodeURIComponent(domain)}`);
+    const result = await response.json();
+    const resultDiv = document.getElementById('resultContainer');
+    if (result.status === "success") {
+      resultDiv.textContent = `Data for ${domain}: ${JSON.stringify(result.data)}`;
+      resultDiv.style.color = "green";
+    } else {
+      resultDiv.textContent = "Failed to get data!";
+      resultDiv.style.color = "red";
+    }
+  });
+});
+</script>
+
+</body>
+</html>
